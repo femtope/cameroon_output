@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Cameroon Vaccination Tracking System</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/AdminLTE.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="dist/css/skins/_all-skins.css">
+
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <link rel="stylesheet" href="plugins/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/map.css">
+
+  
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+<!--      <span class="logo-mini"><b>CVTS</b></span>-->
+      <!-- logo for regular state and mobile devices -->
+      <img class="pull-left flag-gif" src="image/logo2.png" alt="" title="">
+        <span class="logo-lg"><b>Vaccination Tracking System</b></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+        <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- Icon for Base Map Imagery-->
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+               <img src="image/googlesatellite.png" onclick="googleBase()" class="user-image" alt="User Image" height="20" width="20">
+            </a>
+          </li>
+            
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+               <img src="image/binghybrid.png" onclick="bingHybrid()" class="user-image" alt="User Image" height="20" width="20">
+            </a>
+          </li>
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+               <img src="image/bingaerial.png"  onclick="bingAerial()" class="user-image" alt="User Image" height="20" width="20">
+            </a>
+          </li>
+            
+          <li class="dropdown messages-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+               <img src="image/osm.png" onclick="osmBase()" class="user-image" alt="User Image" height="20" width="20" data-toggle="tooltip" data-placement="bottom">ToolTip
+            </a>
+          </li>
+            
+            
+        </ul>
+      </div>
+    </nav>
+  </header>
+    
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="header">Tracks</li>
+          
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-circle valid"></i>
+            <span>Valid Tracks</span>
+          </a>
+        </li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-times invalid"></i>
+            <span>Invalid Tracks</span>
+         </a>
+        </li>
+        
+        <li class="header">Points of Interest</li>
+        <li class="treeview">
+          <a href="#">
+           <img class="pull-left" src="image/Hospital_Logo_01.png" alt="Urban Areas" title="Hamlet Areas" height="20"> <span onclick="removeHF()">&nbsp;&nbsp;&nbsp;Health Facility</span>
+        </a>
+        </li>
+          
+        <li class="header">Settlements</li>
+        <li class="treeview">
+          <a href="#">
+            <img class="pull-left" src="image/hamlet.png" alt="Urban Areas" title="Hamlet Areas" height="20"> <span>&nbsp;&nbsp;&nbsp;Hamlets</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img class="pull-left" src="image/small.png" alt="Urban Areas" title="Small Settlement Areas" height="20"> <span>&nbsp;&nbsp;&nbsp;Small Settlements</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <img class="pull-left" src="image/urban.png" alt="Urban Areas" title="Urban Areas" height="20"> <span>&nbsp;&nbsp;&nbsp;Built-Up Areas</span>
+          </a>
+        </li>
+          
+        <li class="header">Grids</li>
+        <li>
+          <a href="#">
+            <i class="fa fa-square-o fa-2x buas"></i> <span>&nbsp;&nbsp;&nbsp;BUAs</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-circle-thin fa-2x ssas"></i> <span>&nbsp;&nbsp;&nbsp;SSAs</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-circle-thin fa-2x has"></i> <span>&nbsp;&nbsp;&nbsp;HAs</span>
+          </a>
+        </li>
+        
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <section>
+        <div class="col-md-12" id="map"></div>
+        <div>
+            <h7 class="red text-center"><i class="icon fa fa-spinner fa-5x" id="spinposition"></i></h7>
+        </div>
+    </section>
+    
+      
+</div>
+    
+ 
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script src="plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 3.3.6 -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/app.min.js"></script>
+<script src="plugins/leaflet/leaflet.js"></script>
+<script src="js/leaflet.label.js"></script>
+<script src="js/Bing.js"></script>
+<script src="js/map.js"></script>
+</body>
+</html>
