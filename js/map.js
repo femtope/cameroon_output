@@ -6,7 +6,7 @@ var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=
     ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM ssa_75m_buffer',
     fc_settlementname = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fc_settlementname',
     bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM bua_grid',
-    gana_tracks = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_46',
+    gana_tracks = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_46 where speed < 5.0',
     geoData = null, bua_gridLayer = null, gana_tracksLayer = null,
     hfLayer = null, buasLayer = null, hasLayer = null, ha50mLayer = null, ha200mLayer = null, ssa75mLayer = null, fcNamesLayer = null,
     markerGroup = null,
@@ -119,19 +119,39 @@ function addDataToMap(geoData) {
         iconSize: [10, 10],
         iconAnchor: [25, 25]
     });
-
-
         hfLayer = L.geoJson(geoData, {
         pointToLayer: function (feature, latlng) {
             var marker = L.marker(latlng, {icon: markerHealth})
                 //markerGroup.addLayer(marker);
             return marker
         }
-
     })
     map.addLayer(hfLayer);
+}
+
+//addTracksToMap
+
+function addTracksToMap(geoData) {
+    var invalid = L.icon({
+        iconUrl: "image/invalid.png",
+        iconSize: [10, 10],
+        iconAnchor: [25, 25]
+    });
     
+    var valid = L.icon({
+        iconUrl: "image/valid.svg",
+        iconSize: [10, 10],
+        iconAnchor: [25, 25]
+    });
     
+        gana_tracksLayer = L.geoJson(geoData, {
+        pointToLayer: function (feature, latlng) {
+            var marker = L.marker(latlng, {icon: valid})
+                //markerGroup.addLayer(marker);
+            return marker
+        }
+    })
+    map.addLayer(gana_tracksLayer);
 }
 
 function adjustLayerbyZoom(zoomLevel) {
@@ -257,7 +277,8 @@ function addBUAGridToMap(geoData) {
       }
         bua_gridLayer = L.geoJson(geoData, {
        style: layerStyles['buagrid']
-    }).addTo(map)
+    })
+//            .addTo(map)
  }
 
 function addSSA75MToMap(geoData) {
@@ -291,6 +312,14 @@ var allColours = {
             radius: 2,
             fillColor: "#008000",
             color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1.0
+        },
+        'valid': {
+            radius: 2,
+            fillColor: "#FFFF0A",
+            color: " #FFFF0A",
             weight: 1,
             opacity: 1,
             fillOpacity: 1.0
@@ -414,6 +443,17 @@ function getFCNAMES(queryUrl) {
     $.post(queryUrl, function (data) {
         hideLoader()
         addFCNAMESToMap(data)
+        console.log('Data-Geo:  ', data);
+    }).fail(function () {
+        console.log("error!")
+    });
+}
+
+function getTracks(queryUrl) {
+    showLoader()
+    $.post(queryUrl, function (data) {
+        hideLoader()
+        addTracksToMap(data)
         console.log('Data-Geo:  ', data);
     }).fail(function () {
         console.log("error!")
