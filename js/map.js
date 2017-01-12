@@ -6,10 +6,11 @@ var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=
     ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM ssa_75m_buffer',
     fc_settlementname = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fc_settlementname',
     bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM bua_grid',
-    geoData = null, bua_gridLayer = null,
+    gana_tracks = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_46',
+    geoData = null, bua_gridLayer = null, gana_tracksLayer = null,
     hfLayer = null, buasLayer = null, hasLayer = null, ha50mLayer = null, ha200mLayer = null, ssa75mLayer = null, fcNamesLayer = null,
     markerGroup = null,
-    cameroonAdm1, buasData, hasData, hfData, ha50mData, ha200mData, ssa75mData, fcNamesData, bua_gridData,
+    cameroonAdm1, buasData, hasData, hfData, ha50mData, ha200mData, ssa75mData, fcNamesData, bua_gridData, ganaData,
     trackLayer = new L.GeoJSON(),
     prefecture_layer = null, sub_prefecture_layer = null, bufferLayer = null,
     cameroon_district = null, cameroon_area = null,
@@ -97,6 +98,7 @@ function triggerUiUpdate() {
     ssa75mData = getSSA75(ssa_75m_buffer);   
     fcNamesData = getFCNAMES(fc_settlementname);
     bua_gridData = getBUAGrid(bua_grid);
+    ganaData = getTracks(gana_tracks)
     hideLoader();
 }
 
