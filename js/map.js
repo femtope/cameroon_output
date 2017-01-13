@@ -1,7 +1,8 @@
 var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cam_hf',
     fe_buas = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fe_buas',
     fe_hamletpt = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fe_hamletpt',
-    ha_50m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_50m_buffer',
+//    ha_50m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_50m_buffer',
+    ha_50m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_48',
     ha_200m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_200m_buffer',
     ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM ssa_75m_buffer',
     fc_settlementname = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fc_settlementname',
@@ -194,9 +195,16 @@ function adjustLayerbyZoom(zoomLevel) {
     if (zoomLevel > 14) {
         map.addLayer(bua_gridLayer);
     }
-//    else if (zoomLevel < 14){
-//         map.removeLayer(bua_gridLayer);
-//    }
+    else {
+         map.removeLayer(bua_gridLayer);
+    }
+
+    if (zoomLevel > 14) {
+        map.addLayer(ha50mData);
+    }
+    else {
+         map.removeLayer(ha50mData);
+    }
     
 }
 
@@ -240,8 +248,28 @@ function add50MToMap(geoData) {
       }
     
         ha50mData = L.geoJson(geoData, {
-       style: layerStyles['ha50']
-    }).addTo(map)
+       style: function(feature){
+                switch (feature.properties.status) {
+                case 'not_visited': return {
+                "clickable": false,
+                "color": '#FF0000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            };
+                case 'visited': return {
+                "clickable": false,
+                "color": '#008000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            };
+                }
+            }
+    })
+//            .addTo(map)
     
     
 }
