@@ -146,16 +146,16 @@ function addTracksToMap(geoData) {
     
         gana_tracksLayer = L.geoJson(geoData, {
         pointToLayer: function (feature, latlng) {
-            var marker = L.marker(latlng, {icon: valid})
+            var marker = L.marker(latlng, {icon: invalid})
                 //markerGroup.addLayer(marker);
             return marker
         }
     })
-    map.addLayer(gana_tracksLayer);
+//    map.addLayer(gana_tracksLayer);
 }
 
 function adjustLayerbyZoom(zoomLevel) {
-    if (zoomLevel > 15)
+    if (zoomLevel > 14)
         for (var i = 0; i < buaLabels.length; i++) {
             buaLabels[i].addTo(map)
         }
@@ -165,7 +165,7 @@ function adjustLayerbyZoom(zoomLevel) {
         }
     }
     
-    if (zoomLevel > 13)
+    if (zoomLevel > 14)
         for (var i = 0; i < ssaLabels.length; i++) {
             ssaLabels[i].addTo(map)
         }
@@ -176,7 +176,7 @@ function adjustLayerbyZoom(zoomLevel) {
     }
     
         
-    if (zoomLevel > 13) {
+    if (zoomLevel > 15) {
         map.addLayer(fcNamesLayer);
         for (var i = 0; i < fcLables.length; i++) {
             fcLables[i].addTo(map)
