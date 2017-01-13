@@ -5,7 +5,8 @@ var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=
     ha_200m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_200m_buffer',
     ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM ssa_75m_buffer',
     fc_settlementname = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fc_settlementname',
-    bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM bua_grid',
+//    bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM bua_grid',
+    bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_47',
     gana_tracks = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_46 where speed < 5.0',
     geoData = null, bua_gridLayer = null, gana_tracksLayer = null,
     hfLayer = null, buasLayer = null, hasLayer = null, ha50mLayer = null, ha200mLayer = null, ssa75mLayer = null, fcNamesLayer = null,
@@ -190,12 +191,12 @@ function adjustLayerbyZoom(zoomLevel) {
     }
     
     
-    if (zoomLevel > 13) {
+    if (zoomLevel > 14) {
         map.addLayer(bua_gridLayer);
     }
-    else {
-         map.removeLayer(bua_gridLayer);
-    }
+//    else if (zoomLevel < 14){
+//         map.removeLayer(bua_gridLayer);
+//    }
     
 }
 
@@ -266,7 +267,15 @@ function add200MToMap(geoData) {
 
 function addBUAGridToMap(geoData) {
     var layerStyles = {
-            'buagrid': {
+        'not_visited': {
+                "clickable": false,
+                "color": '#FF0000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            },
+        'visited': {
                 "clickable": false,
                 "color": '#FF0000',
                 "fillColor": '#D6D6D6',
@@ -276,7 +285,27 @@ function addBUAGridToMap(geoData) {
             }
       }
         bua_gridLayer = L.geoJson(geoData, {
-       style: layerStyles['buagrid']
+//       style: layerStyles['buagrid']
+            style: function(feature){
+                switch (feature.properties.status) {
+                    case 'not_visited': return {
+                "clickable": false,
+                "color": '#FF0000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            };
+                    case 'visited': return {
+                "clickable": false,
+                "color": '#008000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            };
+                }
+            }
     })
 //            .addTo(map)
  }
