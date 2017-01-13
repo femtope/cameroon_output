@@ -4,7 +4,8 @@ var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=
 //    ha_50m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_50m_buffer',
     ha_50m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_48',
     ha_200m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_200m_buffer',
-    ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM ssa_75m_buffer',
+//    ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM ssa_75m_buffer',
+    ssa_75m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_49',
     fc_settlementname = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fc_settlementname',
 //    bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM bua_grid',
     bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_47',
@@ -199,7 +200,7 @@ function adjustLayerbyZoom(zoomLevel) {
          map.removeLayer(bua_gridLayer);
     }
 
-    if (zoomLevel > 14) {
+    if (zoomLevel > 13) {
         map.addLayer(ha50mData);
     }
     else {
@@ -316,7 +317,7 @@ function addBUAGridToMap(geoData) {
 //       style: layerStyles['buagrid']
             style: function(feature){
                 switch (feature.properties.status) {
-                    case 'not_visited': return {
+                case 'not_visited': return {
                 "clickable": false,
                 "color": '#FF0000',
                 "fillColor": '#D6D6D6',
@@ -324,7 +325,7 @@ function addBUAGridToMap(geoData) {
                 "opacity": 2,
                 "fillOpacity": 0.1
             };
-                    case 'visited': return {
+                case 'visited': return {
                 "clickable": false,
                 "color": '#008000',
                 "fillColor": '#D6D6D6',
@@ -350,7 +351,26 @@ function addSSA75MToMap(geoData) {
             }
       }
         ssa75mLayer = L.geoJson(geoData, {
-       style: layerStyles['ssa200']
+       style: function(feature){
+                switch (feature.properties.status) {
+                case 'not_visited': return {
+                "clickable": false,
+                "color": '#FF0000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            };
+                case 'visited': return {
+                "clickable": false,
+                "color": '#008000',
+                "fillColor": '#D6D6D6',
+                "weight": 1,
+                "opacity": 2,
+                "fillOpacity": 0.1
+            };
+                }
+            }
     }).addTo(map)
     
     
