@@ -257,7 +257,7 @@ function add50MToMap(geoData) {
                 "fillColor": '#D6D6D6',
                 "weight": 1,
                 "opacity": 2,
-                "fillOpacity": 0.1
+                "fillOpacity": 0.5
             };
                 case 'visited': return {
                 "clickable": false,
@@ -265,7 +265,7 @@ function add50MToMap(geoData) {
                 "fillColor": '#D6D6D6',
                 "weight": 1,
                 "opacity": 2,
-                "fillOpacity": 0.1
+                "fillOpacity": 0.5
             };
                 }
             }
@@ -323,7 +323,7 @@ function addBUAGridToMap(geoData) {
                 "fillColor": '#D6D6D6',
                 "weight": 1,
                 "opacity": 2,
-                "fillOpacity": 0.1
+                "fillOpacity": 0.5
             };
                 case 'visited': return {
                 "clickable": false,
@@ -331,7 +331,7 @@ function addBUAGridToMap(geoData) {
                 "fillColor": '#D6D6D6',
                 "weight": 1,
                 "opacity": 2,
-                "fillOpacity": 0.1
+                "fillOpacity": 0.5
             };
                 }
             }
@@ -359,7 +359,7 @@ function addSSA75MToMap(geoData) {
                 "fillColor": '#D6D6D6',
                 "weight": 1,
                 "opacity": 2,
-                "fillOpacity": 0.1
+                "fillOpacity": 0.5
             };
                 case 'visited': return {
                 "clickable": false,
@@ -367,7 +367,7 @@ function addSSA75MToMap(geoData) {
                 "fillColor": '#D6D6D6',
                 "weight": 1,
                 "opacity": 2,
-                "fillOpacity": 0.1
+                "fillOpacity": 0.5
             };
                 }
             }
