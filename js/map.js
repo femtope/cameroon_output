@@ -1,4 +1,4 @@
-var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cam_hf',
+var type = '', hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cam_hf',
     fe_buas = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fe_buas',
     fe_hamletpt = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fe_hamletpt',
 //    ha_50m_buffer = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM hamlet_50m_buffer',
@@ -9,11 +9,11 @@ var type = '', distance, hf = 'http://ehealthafrica.carto.com/api/v2/sql?format=
     fc_settlementname = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM fc_settlementname',
 //    bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM bua_grid',
     bua_grid = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_47',
-    gana_tracks = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM geoserver_getfeature_46 where speed < 5.0',
-    geoData = null, bua_gridLayer = null, gana_tracksLayer = null,
+    sample_tracks = 'http://ehealthafrica.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cum_tracks',
+    geoData = null, bua_gridLayer = null, sample_tracksLayer = null,
     hfLayer = null, buasLayer = null, hasLayer = null, ha50mLayer = null, ha200mLayer = null, ssa75mLayer = null, fcNamesLayer = null,
     markerGroup = null,
-    cameroonAdm1, buasData, hasData, hfData, ha50mData, ha200mData, ssa75mData, fcNamesData, bua_gridData, ganaData,
+    cameroonAdm1, buasData, hasData, hfData, ha50mData, ha200mData, ssa75mData, fcNamesData, bua_gridData, trackData,
     trackLayer = new L.GeoJSON(),
     prefecture_layer = null, sub_prefecture_layer = null, bufferLayer = null,
     cameroon_district = null, cameroon_area = null,
@@ -101,7 +101,7 @@ function triggerUiUpdate() {
     ssa75mData = getSSA75(ssa_75m_buffer);   
     fcNamesData = getFCNAMES(fc_settlementname);
     bua_gridData = getBUAGrid(bua_grid);
-    ganaData = getTracks(gana_tracks)
+    trackData = getTracks(sample_tracks)
     hideLoader();
 }
 
@@ -135,26 +135,44 @@ function addDataToMap(geoData) {
 //addTracksToMap
 
 function addTracksToMap(geoData) {
-    var invalid = L.icon({
-        iconUrl: "image/invalid.png",
-        iconSize: [10, 10],
-        iconAnchor: [25, 25]
-    });
-    
-    var valid = L.icon({
-        iconUrl: "image/valid.svg",
-        iconSize: [10, 10],
-        iconAnchor: [25, 25]
-    });
-    
-        gana_tracksLayer = L.geoJson(geoData, {
-        pointToLayer: function (feature, latlng) {
-            var marker = L.marker(latlng, {icon: invalid})
-                //markerGroup.addLayer(marker);
-            return marker
+    var markerIcon = {
+        'yes': {
+            radius: 5,
+            fillColor: "#008000",
+            color:  "#008000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1.0
+        },
+        'no': {
+            radius: 5,
+            fillColor: "#ff0000",
+            color:  "#ff0000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1.0
         }
-    })
-//    map.addLayer(gana_tracksLayer);
+    }
+
+//    var no = L.icon({
+//        iconUrl: "image/invalid.png",
+//        iconSize: [10, 10],
+//        iconAnchor: [25, 25]
+//    });
+//
+//    var yes = L.icon({
+//        iconUrl: "image/valid.svg",
+//        iconSize: [10, 10],
+//        iconAnchor: [25, 25]
+//    });
+    
+        sample_tracksLayer = L.geoJson(geoData, {
+        pointToLayer: function (feature, latlng) {
+            var marker = L.circleMarker(latlng, markerIcon[feature.properties.isvalid])
+            return marker
+            }
+    }).addTo(map)
+//    map.addLayer(sample_tracksLayer);
 }
 
 function adjustLayerbyZoom(zoomLevel) {
@@ -207,6 +225,14 @@ function adjustLayerbyZoom(zoomLevel) {
          map.removeLayer(ha50mData);
     }
     
+
+    if (zoomLevel > 14) {
+        map.addLayer(cameroon_area);
+    }
+    else {
+         map.removeLayer(cameroon_area);
+    }
+
 }
 
 function addBUAToMap(geoData) {
@@ -254,7 +280,7 @@ function add50MToMap(geoData) {
                 case 'not_visited': return {
                 "clickable": false,
                 "color": '#FF0000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#FF0000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.2
@@ -262,7 +288,7 @@ function add50MToMap(geoData) {
                 case 'visited': return {
                 "clickable": false,
                 "color": '#008000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#008000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.2
@@ -299,7 +325,7 @@ function addBUAGridToMap(geoData) {
         'not_visited': {
                 "clickable": false,
                 "color": '#FF0000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#FF0000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.1
@@ -307,7 +333,7 @@ function addBUAGridToMap(geoData) {
         'visited': {
                 "clickable": false,
                 "color": '#FF0000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#FF0000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.1
@@ -320,7 +346,7 @@ function addBUAGridToMap(geoData) {
                 case 'not_visited': return {
                 "clickable": false,
                 "color": '#FF0000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#FF0000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.2
@@ -328,7 +354,7 @@ function addBUAGridToMap(geoData) {
                 case 'visited': return {
                 "clickable": false,
                 "color": '#008000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#008000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.2
@@ -356,7 +382,7 @@ function addSSA75MToMap(geoData) {
                 case 'not_visited': return {
                 "clickable": false,
                 "color": '#FF0000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#FF0000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.5
@@ -364,7 +390,7 @@ function addSSA75MToMap(geoData) {
                 case 'visited': return {
                 "clickable": false,
                 "color": '#008000',
-                "fillColor": '#D6D6D6',
+                "fillColor": '#008000',
                 "weight": 1,
                 "opacity": 2,
                 "fillOpacity": 0.5
@@ -537,40 +563,95 @@ function getTracks(queryUrl) {
     });
 }
 
-//function getAdminLayers() {
-//    showLoader()
-//    var adminLayers = {}
-//
-//    //Add Admin Layers to Map
-//
-//
-//     $.get('resources/admin_area.geojson', function (cam_area) {
-//        adminLayers['camArea'] = JSON.parse(cam_area)
-//        addAdminLayersToMap(adminLayers)
-//		}).fail(function () {
-//            logError(null)
-//        })
-//
-//
-//    $.get('resources/admin_district.geojson', function (cam_district) {
-//        adminLayers['camDistrict'] = JSON.parse(cam_district)
-//        addAdminLayersToMap(adminLayers)
-//		}).fail(function () {
-//            logError(null)
-//        })
-//
-//
-//    $.get('resources/cameroon_admin1.geojson', function (cam_admin1) {
-//        adminLayers['camAdmin1'] = JSON.parse(cam_admin1)
-//        addAdminLayersToMap(adminLayers)
-//		}).fail(function () {
-//            logError(null)
-//        })
-//}
+
+//Adding all the admin layer to the map
+function addAdminLayersToMap(layers) {
+    var layerStyles = {
+            'admin1': {
+                "clickable": true,
+                "color": '#FFFFFF',
+                "fillColor": '#B2BEB5',
+                "weight": 3,
+                "opacity": 1.5,
+                "fillOpacity": 0
+            },
+            'district': {
+                "clickable": true,
+                "color": '#E3B551',
+                "fillColor": '#B2BEB5',
+                "weight": 4,
+                "opacity": 1.5,
+                "fillOpacity": 0
+            },
+            'area': {
+                "clickable": true,
+                "color": '#E3B551',
+                "fillColor": '#B2BEB5',
+                "weight": 4,
+                "opacity": 1.5,
+                "fillOpacity": 0
+            }
+      }
+
+    cameroonAdm1 = L.geoJson(layers['camAdmin1'], {
+        style: layerStyles['admin1']
+    })
+//        .addTo(map)
+
+    //Zoom In to Area Level
+
+    if(cameroon_area != null)
+        map.removeLayer(cameroon_area)
+
+    cameroon_area = L.geoJson(layers['camArea'], {
+        style: layerStyles['area'],
+    }).addTo(map)
+
+    //Zoom In to District level
+    if(cameroon_district != null)
+      map.removeLayer(cameroon_district)
+
+    cameroon_district = L.geoJson(layers['camDistrict'], {
+        style: layerStyles['district']
+      }).addTo(map)
+}
+
+
+
+function getAdminLayers() {
+    showLoader()
+    var adminLayers = {}
+
+    //Add Admin Layers to Map
+
+
+     $.get('resources/admin_area.geojson', function (cam_area) {
+        adminLayers['camArea'] = JSON.parse(cam_area)
+        addAdminLayersToMap(adminLayers)
+		}).fail(function () {
+            logError(null)
+        })
+
+
+    $.get('resources/admin_district.geojson', function (cam_district) {
+        adminLayers['camDistrict'] = JSON.parse(cam_district)
+        addAdminLayersToMap(adminLayers)
+		}).fail(function () {
+            logError(null)
+        })
+
+
+    $.get('resources/cameroon_admin1.geojson', function (cam_admin1) {
+        adminLayers['camAdmin1'] = JSON.parse(cam_admin1)
+        addAdminLayersToMap(adminLayers)
+		}).fail(function () {
+            logError(null)
+        })
+}
 
 function logError(error) {
     console.log("error!")
 }
 
 triggerUiUpdate();
-//getAdminLayers();
+getAdminLayers();
